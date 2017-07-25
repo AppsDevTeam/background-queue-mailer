@@ -1,0 +1,21 @@
+{
+    "name": "adt/background-queue-mailer",
+    "description": "Delegate sending emails to adt/background-queue.",
+    "type": "library",
+    "license": ["BSD-3-Clause", "GPL-2.0", "GPL-3.0"],
+    "authors": [
+        {
+            "name": "Apps Dev Team",
+            "homepage": "http://appsdevteam.com",
+            "email": "hello@appsdevteam.com"
+        }
+    ],
+    "support": {
+        "email": "hello@appsdevteam.com",
+        "issues": "https://github.com/AppsDevTeam/SingleRecipientMailer/issues"
+    },
+    "minimum-stability": "stable",
+    "require": {
+        "adt/background-queue": "^3.1"
+    }
+}
