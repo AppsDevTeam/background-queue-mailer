@@ -4,6 +4,7 @@ namespace ADT\Mail\BackgroundQueueMailer;
 
 use ADT\BackgroundQueue;
 use Nette\Mail;
+use Nette\Utils\JSON;
 use Tracy\Debugger;
 
 
@@ -32,9 +33,9 @@ class Mailer extends \Nette\Object implements Mail\IMailer {
 		$entity = new BackgroundQueue\Entity\QueueEntity;
 		$entity->setCallbackName($this->callbackName);
 		$entity->setParameters([
-			// Parameters are stored as LONGTEXT, so they cannot contain binary data.
+			// Parameters are stored as LONGTEXT UTF-8, so they cannot contain binary data.
 			// This should be fine if we encode mail as JSON.
-			'mail' => json_encode(serialize($mail)),
+			'mail' => JSON::encode(serialize($mail)),
 		]);
 
 		$this->backgroundQueueService
@@ -47,7 +48,8 @@ class Mailer extends \Nette\Object implements Mail\IMailer {
 			return FALSE; // repeatable error
 		}
 
-		$mail = unserialize(json_decode($entity->getParameters()['mail']));
+		$parameters = $entity->getParameters();
+		$mail = unserialize(JSON::decode($parameters['mail']));
 
 		try {
 			$this->next->send($mail);
