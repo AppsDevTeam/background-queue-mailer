@@ -16,6 +16,12 @@
     },
     "minimum-stability": "stable",
     "require": {
-        "adt/background-queue": "^3.1"
+        "adt/background-queue": "^3.1",
+        "tracy/tracy": "^2.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "ADT\\Mail\\BackgroundQueueMailer\\": "src/"
+        }
     }
 }
