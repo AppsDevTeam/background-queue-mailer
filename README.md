@@ -22,15 +22,14 @@ services:
 		class: \Nette\Mail\SmtpMailer
 		autowired: no # this is important
 
-	nette.mailer: \ADT\Mail\BackgroundQueueMailer(@smtpMailer, @backgroundQueue.service, 'backgroundMail')
+	nette.mailer: \ADT\Mail\BackgroundQueueMailer(@smtpMailer, 'backgroundMail')
 
 backgroundQueue:
 	callbacks:
 		backgroundMail: @nette.mailer::process
 ``` 
 
-where `@smtpMailer` is outgoing mailer, `@backgroundQueue.service` is dependency on BackgroundQueue,
-and `backgroundMail` is unique callback name.
+where `@smtpMailer` is outgoing mailer, and `backgroundMail` is unique callback name.
 
 Callback name has to be same in both mailer definition and BackgroundQueue callback list. If they
 are not, warning is logged using Tracy. This should get resolved [here](https://github.com/AppsDevTeam/BackgroundQueue/issues/8).

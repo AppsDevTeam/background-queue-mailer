@@ -13,20 +13,20 @@ class Mailer extends \Nette\Object implements Mail\IMailer {
 	/** @var Mail\IMailer */
 	protected $next;
 
-	/** @var BackgroundQueue\Service */
-	protected $backgroundQueueService;
-
 	/** @var string */
 	protected $callbackName;
 
+	/** @var BackgroundQueue\Service */
+	protected $backgroundQueueService;
+
 	public function __construct(
 		Mail\IMailer $next,
-		BackgroundQueue\Service $backgroundQueueService,
-		$callbackName
+		$callbackName,
+		BackgroundQueue\Service $backgroundQueueService
 	) {
 		$this->next = $next;
-		$this->backgroundQueueService = $backgroundQueueService;
 		$this->callbackName = $callbackName;
+		$this->backgroundQueueService = $backgroundQueueService;
 	}
 
 	public function send(Mail\Message $mail) {
