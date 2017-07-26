@@ -32,6 +32,8 @@ class Mailer extends \Nette\Object implements Mail\IMailer {
 		$entity = new BackgroundQueue\Entity\QueueEntity;
 		$entity->setCallbackName($this->callbackName);
 		$entity->setParameters([
+			// Parameters are stored as LONGTEXT, so they cannot contain binary data.
+			// This should be fine if we encode mail as JSON.
 			'mail' => json_encode(serialize($mail)),
 		]);
 
