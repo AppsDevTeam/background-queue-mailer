@@ -22,7 +22,7 @@ services:
 		class: \Nette\Mail\SmtpMailer
 		autowired: no # this is important
 
-	nette.mailer: \ADT\Mail\BackgroundQueueMailer(@smtpMailer, 'backgroundMail')
+	nette.mailer: \ADT\Mail\BackgroundQueueMailer\Mailer(@smtpMailer, 'backgroundMail')
 
 backgroundQueue:
 	callbacks:
