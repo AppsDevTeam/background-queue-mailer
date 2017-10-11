@@ -34,8 +34,8 @@ class Mailer extends \Nette\Object implements Mail\IMailer {
 		$entity->setCallbackName($this->callbackName);
 		$entity->setParameters([
 			// Parameters are stored as LONGTEXT UTF-8, so they cannot contain binary data.
-			// This should be fine if we encode mail as JSON.
-			'mail' => Json::encode(serialize($mail)),
+			// This should be fine if we encode mail as base64.
+			'mail' => base64_encode(serialize($mail)),
 		]);
 
 		$this->backgroundQueueService
@@ -49,7 +49,18 @@ class Mailer extends \Nette\Object implements Mail\IMailer {
 		}
 
 		$parameters = $entity->getParameters();
-		$mail = unserialize(Json::decode($parameters['mail']));
+		$mailData = $parameters['mail'];
+
+		$mailDataDecoded = base64_decode($mailData);
+
+		// DEPRECATED: This block of code will be deleted in future.
+		// $mailData can also have JSON format (old deprecated format)
+		if ($mailDataDecoded === FALSE) {
+			// JSON (old deprecated format)
+			$mailDataDecoded = Json::decode($mailData);
+		}
+
+		$mail = unserialize($mailDataDecoded);
 
 		try {
 			$this->next->send($mail);
