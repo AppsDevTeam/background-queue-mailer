@@ -40,6 +40,8 @@ class Mailer extends \Nette\Object implements Mail\IMailer {
 
 		$this->backgroundQueueService
 			->publish($entity);
+
+		return $entity;
 	}
 
 	public function process(BackgroundQueue\Entity\QueueEntity $entity) {
