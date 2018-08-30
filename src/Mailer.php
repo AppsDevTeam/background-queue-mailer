@@ -8,7 +8,9 @@ use Nette\Utils\Json;
 use Tracy\Debugger;
 
 
-class Mailer extends \Nette\Object implements Mail\IMailer {
+class Mailer implements Mail\IMailer {
+	
+	use \Nette\SmartObject;
 
 	/** @var Mail\IMailer */
 	protected $next;
