@@ -32,7 +32,8 @@ class Mailer implements Mail\IMailer {
 	}
 
 	public function send(Mail\Message $mail) {
-		$entity = new BackgroundQueue\Entity\QueueEntity;
+		$entityClass = $this->backgroundQueueService->getEntityClass();
+		$entity = new $entityClass;
 		$entity->setCallbackName($this->callbackName);
 		$entity->setParameters([
 			// Parameters are stored as LONGTEXT UTF-8, so they cannot contain binary data.
