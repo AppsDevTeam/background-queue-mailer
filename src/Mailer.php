@@ -31,7 +31,7 @@ class Mailer implements Mail\IMailer {
 		$this->backgroundQueueService = $backgroundQueueService;
 	}
 
-	public function send(Mail\Message $mail) {
+	public function send(Mail\Message $mail): void {
 		$entityClass = $this->backgroundQueueService->getEntityClass();
 		$entity = new $entityClass;
 		$entity->setCallbackName($this->callbackName);
@@ -43,8 +43,6 @@ class Mailer implements Mail\IMailer {
 
 		$this->backgroundQueueService
 			->publish($entity);
-
-		return $entity;
 	}
 
 	public function process(BackgroundQueue\Entity\QueueEntity $entity) {
