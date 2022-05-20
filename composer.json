@@ -6,22 +6,18 @@
     "authors": [
         {
             "name": "Apps Dev Team",
-            "homepage": "http://appsdevteam.com",
+            "homepage": "https://www.appsdevteam.com",
             "email": "hello@appsdevteam.com"
         }
     ],
-    "support": {
-        "email": "hello@appsdevteam.com",
-        "issues": "https://github.com/AppsDevTeam/SingleRecipientMailer/issues"
-    },
     "minimum-stability": "stable",
     "require": {
-        "adt/background-queue": "^3.1",
+        "adt/background-queue": "^4.0",
         "tracy/tracy": "^2.3"
     },
     "autoload": {
         "psr-4": {
-            "ADT\\Mail\\BackgroundQueueMailer\\": "src/"
+            "ADT\\BackgroundQueueMailer\\": "src/"
         }
     }
 }
