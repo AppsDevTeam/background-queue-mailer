@@ -1,15 +1,11 @@
-# BackgroundQueueMailer
+# Background Queue Mailer
 
-Delegates sending emails to [adt/background-queue](https://github.com/AppsDevTeam/BackgroundQueue).
+Delegates sending emails to [adt/background-queue](https://github.com/AppsDevTeam/background-queue).
 
 ## Installation
-composer:
 ```
 composer require adt/background-queue-mailer
 ```
-
-If you're not familiar with [adt/background-queue](https://github.com/AppsDevTeam/BackgroundQueue),
-you should head there in the first place.
 
 ## Usage
 
