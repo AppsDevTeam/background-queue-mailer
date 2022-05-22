@@ -9,9 +9,6 @@ composer require adt/background-queue-mailer
 
 ## Usage
 
-To use BackgroundQueueMailer as buffer between your application and SmtpMailer, register
-it in your `config.neon`:
-
 ```neon
 services:
 	smtpMailer:
