@@ -1,78 +1,47 @@
 <?php
 
-namespace ADT\Mail\BackgroundQueueMailer;
+namespace ADT\BackgroundQueueMailer;
 
-use ADT\BackgroundQueue;
-use Nette\Mail;
+use ADT\BackgroundQueue\BackgroundQueue;
+use Nette\Mail\IMailer;
+use Nette\Mail\Message;
+use Nette\Mail\SendException;
 use Nette\Utils\Json;
 use Tracy\Debugger;
 
+class BackgroundQueueMailer implements IMailer
+{
+	protected IMailer $next;
 
-class Mailer implements Mail\IMailer {
-	
-	use \Nette\SmartObject;
+	protected string $callbackName;
 
-	/** @var Mail\IMailer */
-	protected $next;
-
-	/** @var string */
-	protected $callbackName;
-
-	/** @var BackgroundQueue\Service */
-	protected $backgroundQueueService;
+	protected BackgroundQueue $backgroundQueue;
 
 	public function __construct(
-		Mail\IMailer $next,
-		$callbackName,
-		BackgroundQueue\Service $backgroundQueueService
+		IMailer $next,
+		string $callbackName,
+		BackgroundQueue $backgroundQueue
 	) {
 		$this->next = $next;
 		$this->callbackName = $callbackName;
-		$this->backgroundQueueService = $backgroundQueueService;
+		$this->backgroundQueue = $backgroundQueueService;
 	}
 
-	public function send(Mail\Message $mail): void {
-		$entityClass = $this->backgroundQueueService->getEntityClass();
-		$entity = new $entityClass;
-		$entity->setCallbackName($this->callbackName);
-		$entity->setParameters([
+	public function send(Message $mail): void
+	{
+		$this->backgroundQueue->publish(
+			$this->callbackName,
 			// Parameters are stored as LONGTEXT UTF-8, so they cannot contain binary data.
 			// This should be fine if we encode mail as base64.
-			'mail' => base64_encode(serialize($mail)),
-		]);
-
-		$this->backgroundQueueService
-			->publish($entity);
+			['message' => base64_encode(serialize($mail))],
+		);
 	}
 
-	public function process(BackgroundQueue\Entity\QueueEntity $entity) {
-		if ($entity->getCallbackName() !== $this->callbackName) {
-			Debugger::log("Callback names do not match, expected: '{$this->callbackName}' but got: '{$entity->getCallbackName()}'; skipping'", Debugger::WARNING);
-			return FALSE; // repeatable error
-		}
-
-		$parameters = $entity->getParameters();
-		$mailData = $parameters['mail'];
-
-		$mailDataDecoded = base64_decode($mailData);
-
-		// DEPRECATED: This block of code will be deleted in future.
-		// $mailData can also have JSON format (old deprecated format)
-		if ($mailDataDecoded === FALSE) {
-			// JSON (old deprecated format)
-			$mailDataDecoded = Json::decode($mailData);
-		}
-
-		$mail = unserialize($mailDataDecoded);
-
-		try {
-			$this->next->send($mail);
-			return TRUE; // done
-		} catch (Mail\SendException $e) {
-			return FALSE; // repeatable error
-		}
-
-		// everything else is unrepeatable error (logged in BackgroundQueue)
+	public function process(array $parameters) 
+	{
+		/** @var Message $mail */
+		$mail = unserialize(base64_decode($parameters['message']));
+		
+		$this->next->send($mail);
 	}
-
 }
